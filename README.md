@@ -1,4 +1,4 @@
-## Trust Pilot Challenge
+## Trust Pilot Challenge (follow the white rabbit)
 
 You've made an important decision. Now, let's get to the matter.
 
