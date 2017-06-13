@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	TEST    = "8b35bbd7ff2f5dd7c94fffbb1a3512bc" // poultry outwits ants
-	EASY    = "e4820b45d2277f3844eac66c903e84be" // printout stout yawls
-	MEDIUM  = "23170acc097c24edb98fc5488ab033fe" // ty outlaws printouts
-	HARD    = "665e5bcb0c20062fe8abaaf4628bb154" // unknown
+	TEST    = "8b35bbd7ff2f5dd7c94fffbb1a3512bc"
+	EASY    = "e4820b45d2277f3844eac66c903e84be"
+	MEDIUM  = "23170acc097c24edb98fc5488ab033fe"
+	HARD    = "665e5bcb0c20062fe8abaaf4628bb154"
 	ANAGRAM = "ailnooprssttttuuwy"
 )
 
