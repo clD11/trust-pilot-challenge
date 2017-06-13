@@ -1,4 +1,4 @@
-package dictionaryutils
+package wordlistprocessor
 
 import (
 	"bufio"
@@ -8,7 +8,7 @@ import (
 	"trust-pilot-challenge/letterinventory"
 )
 
-func CreateRelevantWordInventory(filepath, anagram string, min int) []string {
+func ProcessWordlist(filepath, anagram string, min int) []string {
 	file := openFile(filepath)
 	defer file.Close()
 	return processWordFile(file, anagram, min)
@@ -31,10 +31,10 @@ func processWordFile(file *os.File, anagram string, min int) []string {
 
 	for scanner.Scan() {
 		currentLine := scanner.Text()
+		letterInventory := letterinventory.CreateLetterInventory(currentLine)
 
 		if !isDuplicate(currentLine, previousLine) && !containsSpecialCharacter(currentLine) &&
-			isMinimumLength(currentLine, min) && letterInv.Contains(currentLine) {
-
+			isMinimumLength(currentLine, min) && letterInv.Contains(letterInventory) {
 			relevantWords = append(relevantWords, currentLine)
 		}
 

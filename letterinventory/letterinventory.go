@@ -7,44 +7,56 @@ type LetterInventory struct {
 
 func CreateLetterInventory(str string) LetterInventory {
 	letterInventory := LetterInventory{}
-	letterInventory.Add(str)
+	letterInventory.init(str)
 	return letterInventory
 }
 
-func (l *LetterInventory) Subtract(str string) {
+func (li *LetterInventory) init(str string) {
 	for _, char := range []byte(str) {
 		index := char - 97
 		if index >= 0 && index <= 25 {
-			l.count[index]--
-			l.size--
+			li.count[index]++
+			li.size++
 		}
 	}
 }
 
-func (l *LetterInventory) Add(str string) {
-	for _, char := range []byte(str) {
-		index := char - 97
-		if index >= 0 && index <= 25 {
-			l.count[index]++
-			l.size++
-		}
+func (li *LetterInventory) Add(letterInventory LetterInventory) {
+	for key, value := range letterInventory.Count() {
+		li.count[key] += value
+		li.size += value
 	}
 }
 
-func (l *LetterInventory) Contains(str string) bool {
-	letterInventory := CreateLetterInventory(str)
+func (li *LetterInventory) Subtract(letterInventory LetterInventory) {
+	for key, value := range letterInventory.Count() {
+		li.count[key] -= value
+		li.size -= value
+	}
+}
+
+func (li LetterInventory) Count() [26]int {
+	return li.count
+}
+
+func (li LetterInventory) Size() int {
+	return li.size
+}
+
+func (li LetterInventory) ContainsNegative() bool {
+	for _, value := range li.count {
+		if value < 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (li LetterInventory) Contains(letterInventory LetterInventory) bool {
 	for i := range letterInventory.count {
-		if letterInventory.count[i] > l.count[i] {
+		if letterInventory.count[i] > li.count[i] {
 			return false
 		}
 	}
 	return true
-}
-
-func (l LetterInventory) GetCount() [26]int {
-	return l.count
-}
-
-func (l LetterInventory) GetSize() int {
-	return l.size
 }

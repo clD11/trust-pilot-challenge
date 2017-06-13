@@ -14,3 +14,6 @@ out
 ants
 try
 lit
+printout
+stout
+yawls

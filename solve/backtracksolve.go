@@ -3,63 +3,62 @@ package solve
 import (
 	"log"
 	"strings"
-	du "trust-pilot-challenge/dictionaryutils"
 	"trust-pilot-challenge/hashutils"
-	"trust-pilot-challenge/letterinventory"
+	li "trust-pilot-challenge/letterinventory"
+	lim "trust-pilot-challenge/letterinventorymap"
 )
 
 var result = []string{}
 
 type Backtrack struct {
-	phrase []string
+	letterInventoryMap lim.LetterInventoryMap
 }
 
-func CreateBacktrack() Backtrack {
-	return Backtrack{phrase: []string{}}
+func CreateBacktrack(letterInventoryMap lim.LetterInventoryMap) Backtrack {
+	return Backtrack{letterInventoryMap: letterInventoryMap}
 }
 
-func (b Backtrack) Solve(letters letterinventory.LetterInventory, targetHash string, wordlist du.DictionaryInventory) bool {
+func (b Backtrack) Solve(letters li.LetterInventory, letterInventoryMap lim.LetterInventoryMap, targetHash string) bool {
 
-	if len(result) > 3 {
+	if b.isBadNode() {
 		return false
 	}
 
-	if b.isGoalNode(letters) {
-		log.Println("testing", result)
-		if hashutils.IsTargetHash(strings.Join(result, " "), targetHash) {
-			log.Println(result)
+	if b.isCandidateNode(letters) {
+		if b.isGoalNode(result, targetHash) {
+			log.Println("FOUND", result)
 			return true
 		}
 		return false
 	}
 
-	if b.isBadNode(letters, wordlist) {
-		return false
-	}
+	for key, value := range letterInventoryMap.Dictionary() {
+		// explore option
+		letters.Subtract(value)
+		result = append(result, key)
 
-	for _, word := range wordlist.Values() {
-		// remove chars from letInv add to result
-		letters.Subtract(word)
-		result = append(result, word)
-
-		words := wordlist.RefineInventory(letters)
-
-		if b.Solve(letters, targetHash, words) {
-			return true
+		if !letters.ContainsNegative() {
+			if b.Solve(letters, letterInventoryMap, targetHash) {
+				return true
+			}
 		}
 
 		// fail add word back
-		letters.Add(word)
+		letters.Add(value)
 		result = append(result[0:len(result)-1], result[len(result):]...)
 	}
 
 	return false
 }
 
-func (b Backtrack) isGoalNode(letters letterinventory.LetterInventory) bool {
-	return letters.GetSize() < 1
+func (b Backtrack) isBadNode() bool {
+	return len(result) > 3
 }
 
-func (b Backtrack) isBadNode(letters letterinventory.LetterInventory, wordlist du.DictionaryInventory) bool {
-	return letters.GetSize() > 1 && wordlist.Size() < 1
+func (b Backtrack) isCandidateNode(letters li.LetterInventory) bool {
+	return letters.Size() < 1
+}
+
+func (b Backtrack) isGoalNode(result []string, targetHash string) bool {
+	return hashutils.IsTargetHash(strings.Join(result, " "), targetHash)
 }
