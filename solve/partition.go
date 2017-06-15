@@ -1,6 +1,11 @@
 package solve
 
 import (
+	"encoding/csv"
+	"fmt"
+	"io"
+	"log"
+	"os"
 	li "trust-pilot-challenge/letterinventory"
 )
 
@@ -13,4 +18,33 @@ func CreateLetter(wordlist []string) map[int][]li.LetterInventory {
 	}
 
 	return letterInventory
+}
+
+// read in parts
+func ReadPartitions(filepath string, len int) {
+	var partitions [3]int
+
+	file := openFile(filepath)
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	for {
+		record, err := reader.Read()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		//partitions = append(partitions, record...) // record has the type []string
+	}
+}
+
+func openFile(filePath string) *os.File {
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return file
 }
