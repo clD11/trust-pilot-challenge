@@ -34,18 +34,21 @@ func (b Backtrack) Solve(letters li.LetterInventory, letterInventoryMap lim.Lett
 
 	for key, value := range letterInventoryMap.Dictionary() {
 		// explore option
-		letters.Subtract(value)
-		result = append(result, key)
+		letters.Subtract(value)		
 
 		if !letters.ContainsNegative() {
+
+			result = append(result, key)
+
 			if b.Solve(letters, letterInventoryMap, targetHash) {
 				return true
 			}
+
+			result = append(result[0:len(result)-1], result[len(result):]...)
 		}
 
 		// fail add word back
-		letters.Add(value)
-		result = append(result[0:len(result)-1], result[len(result):]...)
+		letters.Add(value)		
 	}
 
 	return false

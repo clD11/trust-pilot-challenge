@@ -6,6 +6,7 @@ import (
 	"trust-pilot-challenge/letterinventorymap"
 	"trust-pilot-challenge/solve"
 	"trust-pilot-challenge/wordlistprocessor"
+	"math/rand"
 )
 
 const (
@@ -22,11 +23,22 @@ func main() {
 	wordInventory := wordlistprocessor.ProcessWordlist(
 		"D:/Code/Go/Workspace/src/trust-pilot-challenge/wordlist.txt", ANAGRAM, 2)
 
+	log.Println(wordInventory)
+
+	shuffleArr(wordInventory)
+	log.Println("SHUFFLE")
+	log.Println(wordInventory)
+
 	log.Println("solving with", len(wordInventory), "words")
 
-	findUsingBacktrack(ANAGRAM, EASY, wordInventory)
+	findUsingBacktrack(ANAGRAM, MEDIUM, wordInventory)
 
 	log.Println("Finished")
+}
+
+func findUsingPartition(wordlist []string) {
+	words := solve.CreateLetter(wordlist)
+	log.Println(words)
 }
 
 func findUsingBacktrack(anagram, targetHash string, wordlist []string) {
@@ -40,4 +52,17 @@ func findUsingBacktrack(anagram, targetHash string, wordlist []string) {
 func findUsingPermutations(permSize int, targetHash string, wordlist []string) {
 	perm := solve.CreatePermutation(permSize, wordlist)
 	perm.Solve(targetHash)
+}
+
+func reverseArr(wordlist []string) {
+	for i, j := 0, len(wordlist) - 1; i < j; i, j = i + 1, j - 1 {
+		wordlist[i], wordlist[j] = wordlist[j], wordlist[i]
+	}
+}
+
+func shuffleArr(wordlist []string) {
+	for i := range wordlist {
+		j := rand.Intn(i + 1)
+		wordlist[i], wordlist[j] = wordlist[j], wordlist[i]
+	}
 }
